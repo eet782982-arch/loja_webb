@@ -1,0 +1,28 @@
+{
+    "estoque": {
+        "Arroz": {
+            "quantidade": 9,
+            "preco_custo": 800.0,
+            "preco_venda": 1000.0
+        },
+        "Descart\u00e1veis ": {
+            "quantidade": 50,
+            "preco_custo": 40.0,
+            "preco_venda": 50.0
+        },
+        "\u00d3leo ": {
+            "quantidade": 5,
+            "preco_custo": 90.0,
+            "preco_venda": 100.0
+        }
+    },
+    "vendas": [
+        {
+            "produto": "Arroz",
+            "quantidade": 1,
+            "valor_venda": 1000.0,
+            "lucro": 200.0,
+            "data": "2026-06-11T13:10:27.083422"
+        }
+    ]
+}
