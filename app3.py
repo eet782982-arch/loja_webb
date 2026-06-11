@@ -6,7 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 ARQUIVO = "dados.json"
-RESET_SENHA = "1234"  # 🔐 ALTERA AQUI A SENHA
+RESET_SENHA = "1234"
 
 if not os.path.exists(ARQUIVO):
     with open(ARQUIVO, "w") as f:
@@ -24,6 +24,7 @@ def resetar_dados():
     with open(ARQUIVO, "w") as f:
         json.dump({"estoque": {}, "vendas": []}, f, indent=4)
 
+
 HTML = """
 <!DOCTYPE html>
 <html>
@@ -31,45 +32,14 @@ HTML = """
 <meta charset="utf-8">
 <title>Loja Web</title>
 <style>
-body{
-font-family:Arial;
-background:#f4f4f4;
-margin:20px;
-}
-.card{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:15px;
-box-shadow:0 0 5px #ccc;
-}
-input{
-padding:8px;
-margin:5px;
-}
-button{
-padding:10px;
-background:#2196F3;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-button.reset{
-background:#e53935;
-}
-table{
-width:100%;
-border-collapse:collapse;
-}
-th,td{
-border:1px solid #ddd;
-padding:8px;
-}
-th{
-background:#2196F3;
-color:white;
-}
+body{font-family:Arial;background:#f4f4f4;margin:20px;}
+.card{background:white;padding:15px;border-radius:10px;margin-bottom:15px;box-shadow:0 0 5px #ccc;}
+input{padding:8px;margin:5px;}
+button{padding:10px;background:#2196F3;color:white;border:none;border-radius:5px;cursor:pointer;}
+button.reset{background:#e53935;}
+table{width:100%;border-collapse:collapse;}
+th,td{border:1px solid #ddd;padding:8px;}
+th{background:#2196F3;color:white;}
 </style>
 </head>
 <body>
@@ -143,29 +113,25 @@ color:white;
 
 <div class="card">
 <h2>Controle do Sistema</h2>
-
 <form method="post" action="/reset" onsubmit="return confirm('Tens certeza que queres apagar TUDO?');">
-<input type="password" name="senha" placeholder="Senha de reset" required>
 <button class="reset" type="submit">Reiniciar Tudo</button>
 </form>
-
 </div>
 
 </body>
 </html>
 """
 
+
 @app.route("/")
 def inicio():
     dados = carregar()
-
     hoje = datetime.now().date()
 
-    vendas = []
-
-    for v in dados["vendas"]:
-        if datetime.fromisoformat(v["data"]).date() == hoje:
-            vendas.append(v)
+    vendas = [
+        v for v in dados["vendas"]
+        if datetime.fromisoformat(v["data"]).date() == hoje
+    ]
 
     total_vendas = sum(v["valor_venda"] for v in vendas)
     total_lucro = sum(v["lucro"] for v in vendas)
@@ -177,6 +143,7 @@ def inicio():
         total_vendas=total_vendas,
         total_lucro=total_lucro
     )
+
 
 @app.route("/entrada", methods=["POST"])
 def entrada():
@@ -198,6 +165,7 @@ def entrada():
 
     salvar(dados)
     return redirect("/")
+
 
 @app.route("/venda", methods=["POST"])
 def venda():
@@ -228,15 +196,15 @@ def venda():
 
     return redirect("/")
 
+
 @app.route("/reset", methods=["POST"])
 def reset():
-    senha = request.form.get("senha")
+    resetar_dados()
+    return redirect("/")
 
-    if senha == RESET_SENHA:
-        resetar_dados()
-        return redirect("/")
-    else:
-        return "<h3>Senha incorreta! Acesso negado.</h3><a href='/'>Voltar</a>"
 
+# 🔥 IMPORTANTE PARA RENDER
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    import os
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
