@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+
+
+
+
+    <h1>🏪 Sistema de Gestão de Loja</h1>
+
+<body>
+<div class="cards">
+    <div class="card">
+        <h3>Total Vendido</h3>
+        <span>{{ total_vendas }} Kz</span>
+    </div>
+
+    <div class="card">
+        <h3>Lucro</h3>
+        <span>{{ total_lucro }} Kz</span>
+    </div>
+
+    <div class="card">
+        <h3>Produtos</h3>
+        <span>{{ estoque|length }}</span>
+    </div>
+</div>
+
+<div class="grid">
+
+    <section class="box">
+
+        <h2>➕ Adicionar Produto</h2>
+
+        <form action="/entrada" method="POST">
+
+            <input type="text" name="nome" placeholder="Nome do Produto" required>
+
+            <input type="number" name="quantidade" placeholder="Quantidade" required>
+
+            <input type="number" step="0.01" name="custo" placeholder="Preço de Custo" required>
+
+            <input type="number" step="0.01" name="venda" placeholder="Preço de Venda" required>
+
+            <button type="submit">Adicionar</button>
+
+        </form>
+
+    </section>
+
+    <section class="box">
+
+        <h2>🛒 Registrar Venda</h2>
+
+        <form action="/venda" method="POST">
+
+            <input type="text" name="nome" placeholder="Nome do Produto" required>
+
+            <input type="number" name="quantidade" placeholder="Quantidade" required>
+
+            <button type="submit">Vender</button>
+
+        </form>
+
+    </section>
+
+</div>
+
+<section class="box">
+
+    <h2>📦 Estoque</h2>
+
+    <table>
+
+        <tr>
+            <th>Produto</th>
+            <th>Qtd</th>
+            <th>Custo</th>
+            <th>Venda</th>
+        </tr>
+
+        {% for nome, info in estoque.items() %}
+        <tr>
+            <td>{{ nome }}</td>
+            <td>{{ info.quantidade }}</td>
+            <td>{{ info.preco_custo }}</td>
+            <td>{{ info.preco_venda }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</section>
+
+<section class="box">
+
+    <h2>📊 Relatório de Hoje</h2>
+
+    <table>
+
+        <tr>
+            <th>Produto</th>
+            <th>Qtd</th>
+            <th>Venda</th>
+            <th>Lucro</th>
+        </tr>
+
+        {% for venda in vendas %}
+        <tr>
+            <td>{{ venda.produto }}</td>
+            <td>{{ venda.quantidade }}</td>
+            <td>{{ venda.valor_venda }}</td>
+            <td>{{ venda.lucro }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</section>
+
+<section class="box">
+
+    <h2>⚙ Reiniciar Sistema</h2>
+
+    <form action="/reset" method="POST">
+
+        <input type="password" name="senha" placeholder="Senha">
+
+        <button class="danger" type="submit">
+            Reiniciar Tudo
+        </button>
+
+    </form>
+
+</section>
+</body>
+</html>
+
